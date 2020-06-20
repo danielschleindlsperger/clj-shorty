@@ -18,6 +18,7 @@
 
 (def app (ring/ring-handler (ring/router routes)))
 
+(declare web-server)
 (defstate web-server
   :start (run-server app)
   :stop (web-server))

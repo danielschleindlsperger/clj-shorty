@@ -1,1 +1,1 @@
-{:output {:include-files ["^src"]}}}
+{:output {:include-files ["^src"]}}

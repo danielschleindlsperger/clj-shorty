@@ -18,5 +18,5 @@
             [:button.px-3.py-1.bg-green-300.rounded-r	{:type "submit"} "Shorten"]]]]))
 
 (defn homepage
-  [req]
+  [_]
   (ok (render-homepage)))

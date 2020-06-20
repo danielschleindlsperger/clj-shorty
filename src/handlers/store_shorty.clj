@@ -29,8 +29,8 @@
    (if (< 5 n)
      {:error "Could not find unique id after 5 tries."}
      (let [id (gen-readable-id)]
-       (try (do (sql/insert! db :urls {:id id :target_url url})
-                {:id id :url url})
+       (try (sql/insert! db :urls {:id id :target_url url})
+            {:id id :url url}
             (catch PSQLException e (if (unique-violation? e)
                                      (insert-shorty url (inc n))
                                      (throw e))))))))
@@ -47,5 +47,5 @@
         result (insert-shorty target-url)]
     (if (:error result)
       ;; TODO: handle better with flash message or something
-      {:status 500 :body (:error result)})
-    (see-other (shorty-url (:id result)))))
+      {:status 500 :body (:error result)}
+      (see-other (shorty-url (:id result))))))

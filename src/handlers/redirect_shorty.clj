@@ -1,7 +1,6 @@
 (ns handlers.redirect-shorty
   (:require [next.jdbc.sql :as sql]
             [database :refer [db]]
-            [config :refer [cfg]]
             [handlers.http-util :refer [temporary-redirect]]))
 
 (defn redirect-shorty

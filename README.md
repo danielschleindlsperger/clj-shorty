@@ -30,6 +30,13 @@ A simple URL shortening service.
 clj-kondo --lint "$(clojure -Spath)"
 ```
 
+*Hint* clj-kondo reports `unresolved symbol` when using `mount`'s `defstate` macro. Circumvent with the usage of `declare`:
+```clj
+(declare db)
+(defstate db
+  :start {})
+```
+
 ## TODO
 
 - Move all http logic so single handler file, since it's not so much stuff
