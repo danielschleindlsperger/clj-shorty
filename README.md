@@ -22,17 +22,27 @@ A simple URL shortening service.
 # if changes are not reflected after evaluation, you can hit `cider-ns-refresh` (CIDER only obviously)
 ```
 
+### Linting
+
+[Install clj-kondo](https://github.com/borkdude/clj-kondo/blob/master/doc/install.md) to be available in $PATH.
+
+```sh
+clj-kondo --lint "$(clojure -Spath)"
+```
+
 ## TODO
 
 - Move all http logic so single handler file, since it's not so much stuff
 - Move all hiccup stuff to separate template namespace
 - Build step for tailwind
 - Ring middleware
-  - Security
+- Security
 - POST validation
   - is url
   - check if url behind url exists?
-- Lint with kondo
+
+- CI
+- Deployment
 
 ## Features
 
