@@ -1,0 +1,3 @@
+{:base-url "http://localhost:8090"
+ :port 8090
+ :db-conn-string  "jdbc:postgresql:shorty?currentSchema=public&user=root&password=root"}
