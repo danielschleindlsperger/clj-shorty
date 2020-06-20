@@ -43,8 +43,8 @@ clj-kondo --lint "$(clojure -Spath)"
 - Move all hiccup stuff to separate template namespace
 - Build step for tailwind
 - Ring middleware
-- Security
-- POST validation
+  - Security
+- validation
   - is url
   - check if url behind url exists?
 
