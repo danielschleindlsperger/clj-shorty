@@ -7,6 +7,9 @@ A simple URL shortening service.
 ```sh
 # migrate database
 ./sqitch deploy db:pg://root:root@localhost:5432/shorty
+
+# revert migration
+./sqitch revert db:pg://root:root@localhost:5432/shorty
 ```
 
 ```sh
@@ -23,7 +26,6 @@ A simple URL shortening service.
 
 - Move all http logic so single handler file, since it's not so much stuff
 - Move all hiccup stuff to separate template namespace
-- Check if we can move the squitch folders and files to a subdirectory
 - Build step for tailwind
 - Ring middleware
   - Security
