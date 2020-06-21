@@ -27,7 +27,23 @@
   [_]
   (ok (render-homepage)))
 
+;; 404 page
+(defn not-found-page
+  [req]
+  (ok (html5 {:lang "en"}
+             [:head
+              [:title "Not Found.."]
+              [:meta {:charset "UTF-8"}]
+              [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
+              [:link {:href "https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" :rel "stylesheet"}]]
+             [:body
+              [:main.mt-8.max-w-2xl.p-4.mx-auto
+               [:h1.text-3xl.text-center.font-bold "Not Found"]
+               [:h2 "The requested page could not be found."]
+               [:p "Check if you correctly entered the URL and re-submit."]]])))
+
 ;; STORE shorty
+
 
 (defn- gen-readable-id
   "Generate a human readable, 8 character long, random string.

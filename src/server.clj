@@ -4,7 +4,7 @@
             [org.httpkit.server :refer [run-server]]
             [reitit.ring :as ring]
             [reitit.ring.middleware.parameters :refer [parameters-middleware]]
-            [handlers :refer [homepage show-shorty redirect-shorty store-shorty]]))
+            [handlers :refer [homepage not-found-page show-shorty redirect-shorty store-shorty]]))
 
 (def routes ["/"
              ["" {:get homepage}]
@@ -13,7 +13,7 @@
               ["/:id" {:get show-shorty}]]
              [":id" {:get redirect-shorty :conflicting true}]])
 
-(def app (ring/ring-handler (ring/router routes)))
+(def app (ring/ring-handler (ring/router routes) not-found-page))
 
 (declare web-server)
 (defstate web-server
