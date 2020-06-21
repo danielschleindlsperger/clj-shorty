@@ -4,10 +4,7 @@
             [org.httpkit.server :refer [run-server]]
             [reitit.ring :as ring]
             [reitit.ring.middleware.parameters :refer [parameters-middleware]]
-            [handlers.homepage :refer [homepage]]
-            [handlers.show-shorty :refer [show-shorty]]
-            [handlers.redirect-shorty :refer [redirect-shorty]]
-            [handlers.store-shorty :refer [store-shorty]]))
+            [handlers :refer [homepage show-shorty redirect-shorty store-shorty]]))
 
 (def routes ["/"
              ["" {:get homepage}]

@@ -47,8 +47,6 @@ clj-kondo --lint "$(clojure -Spath)"
 
 ## TODO
 
-- Move all http logic so single handler file, since it's not so much stuff
-- Move all hiccup stuff to separate template namespace
 - Build step for tailwind
 - Ring middleware
   - Security

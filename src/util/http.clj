@@ -1,4 +1,4 @@
-(ns handlers.http-util)
+(ns util.http)
 
 (defn ok
   "200 OK (Success)
