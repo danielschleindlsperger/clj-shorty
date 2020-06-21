@@ -4,7 +4,8 @@
             [next.jdbc.sql :as sql]
             [database :refer [db]]
             [config :refer [cfg]]
-            [util.http :refer [ok see-other temporary-redirect]])
+            [util.http :refer [ok see-other temporary-redirect]]
+            [util.url :refer [resource-url shareable-url]])
   (:import org.postgresql.util.PSQLException))
 
 (defn render-homepage []
@@ -57,11 +58,6 @@
                                      (insert-shorty url (inc n))
                                      (throw e))))))))
 
-(defn- shorty-url
-  "Generate the url to the supplied id of a shorty."
-  [id]
-  (str (:base-url cfg) "/shorties/" id))
-
 (defn store-shorty
   [req]
   ;; TODO: validate
@@ -70,12 +66,9 @@
     (if (:error result)
       ;; TODO: handle better with flash message or something
       {:status 500 :body (:error result)}
-      (see-other (shorty-url (:id result))))))
+      (see-other (resource-url (:id result))))))
 
 ;; SHOW shorty
-(defn- shareable-url
-  [id]
-  (str (:base-url cfg) "/" id))
 
 (defn- render-shorty
   [shorty]
@@ -98,7 +91,6 @@
   [req]
   (let [id (-> req :path-params :id)
         shorty (sql/get-by-id db :urls id)]
-    (println shorty)
     (ok (render-shorty shorty))))
 
 ;; REDIRECT shorty
