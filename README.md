@@ -51,7 +51,6 @@ clj-kondo --lint "$(clojure -Spath)"
 - Ring middleware
   - Security
 - validation
-  - is url
   - check if url behind url exists?
 
 - CI
@@ -60,3 +59,5 @@ clj-kondo --lint "$(clojure -Spath)"
 ## Features
 
 - Remember old URLs with Session?
+- Auto-focus input field
+- Make generated URL copy-able to clipboard

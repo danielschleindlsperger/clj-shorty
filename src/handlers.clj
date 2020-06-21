@@ -1,6 +1,7 @@
 (ns handlers
   (:require [hiccup.page :refer [html5]]
             [clojure.string :refer [join]]
+            [clojure.java.io :refer [as-url]]
             [next.jdbc.sql :as sql]
             [database :refer [db]]
             [config :refer [cfg]]
@@ -20,7 +21,7 @@
            [:h1.text-3xl.text-center.font-bold "Hello Shorty"]
            [:form.mt-16.flex.max-w-xl {:method "POST" :action "/shorties"}
             [:input.flex-grow.px-3.py-1.bg-gray-200.placeholder-gray-600.rounded-l
-             {:type "text" :name "url" :value "https://example.com":placeholder "https://example.com"}]
+             {:type "text" :name "url" :value "https://example.com" :placeholder "https://example.com"}]
             [:button.px-3.py-1.bg-green-300.rounded-r	{:type "submit"} "Shorten"]]]]))
 
 (defn homepage
@@ -58,15 +59,27 @@
                                      (insert-shorty url (inc n))
                                      (throw e))))))))
 
+(defn- validate-url
+  "Check if the given url is a valid HTTP URL.
+  Returns a map with the :url if is valid, or an :error message if it is invalid."
+  [url]
+  (try (let [prot (-> url as-url .getProtocol)]
+         (if-not (#{"https" "http"} prot)
+           {:error "URL invalid: Protocol must be either HTTP or HTTPS"}
+           {:url url}))
+       (catch Exception e {:error (str "URL invalid: " (.getMessage e))})))
+
 (defn store-shorty
   [req]
-  ;; TODO: validate
-  (let [target-url (-> req :params (get "url"))
-        result (insert-shorty target-url)]
-    (if (:error result)
+  (let [{:keys [error url]} (-> req :params (get "url") validate-url)]
+    (if error
       ;; TODO: handle better with flash message or something
-      {:status 500 :body (:error result)}
-      (see-other (resource-url (:id result))))))
+      {:status 500 :body error}
+      (let [{:keys [error id]} (insert-shorty url)]
+        (if error
+          ;; TODO: handle better with flash message or something
+          {:status 500 :body error}
+          (see-other (resource-url id)))))))
 
 ;; SHOW shorty
 
@@ -82,20 +95,21 @@
           [:main.max-w-2xl.p-4.mx-auto
            [:h1.text-3xl.text-center.font-bold "Your Shorty"]
            [:h2 "Your url has been shortened successfully!"]
-           ;; TODO: make url copy-able
            [:div (shareable-url (:urls/id shorty))]
            [:div (:urls/target_url shorty)]
            [:div (:urls/created_at shorty)]]]))
 
 (defn show-shorty
+  "Show the resource page of the shortened URL."
   [req]
-  (let [id (-> req :path-params :id)
-        shorty (sql/get-by-id db :urls id)]
+  ;; TODO: validate id so far as is a string of length 8?
+  (when-let [shorty (->> req :path-params :id (sql/get-by-id db :urls))]
     (ok (render-shorty shorty))))
 
 ;; REDIRECT shorty
 
 (defn redirect-shorty
+  "This is the meat of the app: It redirects the shortened URL to the underlying one."
   [req]
   (let [id (-> req :path-params :id)
         shorty (sql/get-by-id db :urls id)]
