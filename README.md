@@ -2,6 +2,14 @@
 
 A simple URL shortening service.
 
+## Configuration
+
+### Environment Variables
+
+- `PORT` - The local port this application runs on. Default `8090`
+- `BASE_URL` - The publicly reachable base url of the service. Default `http://localhost:8090`
+- `DATABASE_URL` - The JDBC connection string to the Postgres instance.
+
 ## Getting started
 
 ```sh
