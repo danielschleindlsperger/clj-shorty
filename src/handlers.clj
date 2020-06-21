@@ -4,7 +4,6 @@
             [clojure.java.io :refer [as-url]]
             [next.jdbc.sql :as sql]
             [database :refer [db]]
-            [config :refer [cfg]]
             [util.http :refer [ok see-other temporary-redirect]]
             [util.url :refer [resource-url shareable-url]])
   (:import org.postgresql.util.PSQLException))
@@ -111,6 +110,5 @@
 (defn redirect-shorty
   "This is the meat of the app: It redirects the shortened URL to the underlying one."
   [req]
-  (let [id (-> req :path-params :id)
-        shorty (sql/get-by-id db :urls id)]
+  (when-let [shorty (->> req :path-params :id (sql/get-by-id db :urls))]
     (temporary-redirect (:urls/target_url shorty))))
