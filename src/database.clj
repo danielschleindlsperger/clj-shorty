@@ -1,8 +1,8 @@
 (ns database
   (:require [mount.core :refer [defstate]]
-            [next.jdbc :as jdbc]))
+            [next.jdbc :as jdbc]
+            [config :refer [cfg]]))
 
 (declare db)
 (defstate db
-  ;; TODO: use config
-  :start (jdbc/get-datasource "jdbc:postgresql:shorty?currentSchema=public&user=root&password=root"))
+  :start (jdbc/get-datasource (:db-conn-string cfg)))
