@@ -4,7 +4,7 @@
             [clojure.java.io :refer [as-url]]
             [next.jdbc.sql :as sql]
             [database :refer [db]]
-            [util.http :refer [ok see-other temporary-redirect]]
+            [util.http :refer [with-flash ok see-other temporary-redirect]]
             [util.url :refer [resource-url shareable-url]])
   (:import org.postgresql.util.PSQLException))
 
@@ -43,7 +43,6 @@
                [:p "Check if you correctly entered the URL and re-submit."]]])))
 
 ;; STORE shorty
-
 
 (defn- gen-readable-id
   "Generate a human readable, 8 character long, random string.
@@ -94,12 +93,12 @@
         (if error
           ;; TODO: handle better with flash message or something
           {:status 500 :body error}
-          (see-other (resource-url id)))))))
+          (with-flash "Your shorty has been successfully created!" (see-other (resource-url id))))))))
 
 ;; SHOW shorty
 
 (defn- render-shorty
-  [shorty]
+  [shorty req]
   (html5 {:lang "en"}
          [:head
           [:title "Shorty - The coolest URL shortener ever!"]
@@ -109,8 +108,8 @@
          [:body
           [:main.max-w-2xl.p-4.mx-auto
            [:h1.text-3xl.text-center.font-bold "Your Shorty"]
-           [:h2 "Your url has been shortened successfully!"]
-           [:div (shareable-url (:urls/id shorty))]
+           [:div.my-4.bg-green-300.p-4.rounded (:flash req)]
+           [:div.mt-8 (shareable-url (:urls/id shorty))]
            [:div (:urls/target_url shorty)]
            [:div (:urls/created_at shorty)]]]))
 
@@ -119,9 +118,10 @@
   [req]
   ;; TODO: validate id so far as is a string of length 8?
   (when-let [shorty (->> req :path-params :id (sql/get-by-id db :urls))]
-    (ok (render-shorty shorty))))
+    (ok (render-shorty shorty req))))
 
 ;; REDIRECT shorty
+
 
 (defn redirect-shorty
   "This is the meat of the app: It redirects the shortened URL to the underlying one."

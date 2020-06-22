@@ -1,3 +1,4 @@
 {:base-url #or [#env BASE_URL "http://localhost:8090"]
  :port #long #or [#env PORT 8090]
- :db-conn-string #or [#env DATABASE_URL "jdbc:postgresql:shorty?currentSchema=public&user=root&password=root"]}
+ :db-conn-string #or [#env DATABASE_URL "jdbc:postgresql:shorty?currentSchema=public&user=root&password=root"]
+ :session-secret #or [#env SESSION_SECRET "!G$J%M&N*Q)R+T@U"]}

@@ -9,6 +9,7 @@ A simple URL shortening service.
 - `PORT` - The local port this application runs on. Default `8090`
 - `BASE_URL` - The publicly reachable base url of the service. Default `http://localhost:8090`
 - `DATABASE_URL` - The JDBC connection string to the Postgres instance.
+- `SESSION_SECRET` - 16 byte secret to encrypt the session data
 
 ## Getting started
 
@@ -52,7 +53,8 @@ clj-kondo --lint "$(clojure -Spath)"
   - Security
 - validation
   - check if url behind url exists?
-
+- Postgres connection pool
+- Sessions in Postgres?
 - CI
 - Deployment
 
