@@ -3,13 +3,17 @@
 (defn with-flash
   "Add a flash message to the next request. Useful for redirects and showing a message.
   See: https://github.com/ring-clojure/ring/blob/master/ring-core/src/ring/middleware/flash.clj"
-  [flash res]
+  [res flash]
   (assoc res :flash flash))
 
 (defn with-session
-  "Add a value v to key k in the session."
-  [k v res]
-  (assoc-in res [:session k] v))
+  "Add a value v to key k in the session.
+  k can also be a vector to set a nested value.
+  Needs req to be able to use the old session as a base."
+  [res req k v]
+  (let [old-session (:session req)
+        new-session (assoc-in old-session k v)]
+    (assoc res :session new-session)))
 
 (defn ok
   "200 OK (Success)

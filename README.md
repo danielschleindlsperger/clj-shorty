@@ -53,13 +53,13 @@ clj-kondo --lint "$(clojure -Spath)"
   - Security
 - validation
   - check if url behind url exists?
+  - Check length of target url
 - Postgres connection pool
-- Sessions in Postgres?
 - CI
 - Deployment
+- Sessions in Postgres?
 
 ## Features
 
-- Remember old URLs with Session?
 - Auto-focus input field
 - Make generated URL copy-able to clipboard

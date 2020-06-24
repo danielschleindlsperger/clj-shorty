@@ -3,12 +3,35 @@
             [clojure.string :refer [join]]
             [clojure.java.io :refer [as-url]]
             [next.jdbc.sql :as sql]
+            [next.jdbc.result-set :as result-set]
             [database :refer [db]]
-            [util.http :refer [with-flash ok see-other temporary-redirect]]
-            [util.url :refer [resource-url shareable-url]])
+            [config :refer [cfg]]
+            [util.http :refer [with-flash with-session ok see-other temporary-redirect]])
   (:import org.postgresql.util.PSQLException))
 
-(defn render-homepage []
+(defn as-kebab-maps [rs opts]
+  (let [kebab #(clojure.string/replace % #"_" "-")]
+    (result-set/as-unqualified-modified-maps rs (assoc opts :qualifier-fn kebab :label-fn kebab))))
+
+(defn flash
+  [f]
+  (when f [:div.my-8.bg-green-300.p-4.rounded f]))
+
+(defn your-shorties
+  [shorties]
+  (when (peek shorties)
+    [:div.mt-8
+     [:h2.my-4.text-3xl.font-bold "Your shorties"]
+     (for [shorty (sort-by :created-at #(compare %2 %1) shorties)]
+       (let [{:keys [id target-url]} shorty]
+         [:div.flex.justify-between
+          [:div.truncate {:title target-url} target-url]
+          [:div.ml-4.font-mono.font-bold
+           [:span (:base-url cfg)]
+           [:span (str "/" id)]]]))]))
+
+(defn render-homepage
+  [req]
   (html5 {:lang "en"}
          [:head
           [:title "Shorty - The coolest URL shortener ever!"]
@@ -17,19 +40,24 @@
           [:link {:href "https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" :rel "stylesheet"}]]
          [:body
           [:main.mt-8.max-w-2xl.p-4.mx-auto
-           [:h1.text-3xl.text-center.font-bold "Hello Shorty"]
-           [:form.mt-16.flex.max-w-xl {:method "POST" :action "/shorties"}
+           [:h1.text-5xl.text-center.font-bold "Hello Shorty"]
+           (flash (:flash req))
+           [:h2.mt-8.text-3xl.font-bold "What's that?"]
+           [:p.mt-4 "Shorty is the simplest URL shortener imaginable. Paste in your long URL and we'll give you a short one! The short URL can be shared easily and is also fast and reliable to transcribe."]
+           [:form.mt-12.flex.max-w-xl {:method "POST" :action "/shorties"}
             [:input.flex-grow.px-3.py-1.bg-gray-200.placeholder-gray-600.rounded-l
              {:type "text" :name "url" :value "https://example.com" :placeholder "https://example.com"}]
-            [:button.px-3.py-1.bg-green-300.rounded-r	{:type "submit"} "Shorten"]]]]))
+
+            [:button.px-3.py-1.bg-green-300.rounded-r	{:type "submit"} "Shorten!"]]
+           (your-shorties (-> req :session :shorties))]]))
 
 (defn homepage
-  [_]
-  (ok (render-homepage)))
+  [req]
+  (ok (render-homepage req)))
 
 ;; 404 page
 (defn not-found-page
-  [req]
+  [_]
   (ok (html5 {:lang "en"}
              [:head
               [:title "Not Found.."]
@@ -40,7 +68,7 @@
               [:main.mt-8.max-w-2xl.p-4.mx-auto
                [:h1.text-3xl.text-center.font-bold "Not Found"]
                [:h2 "The requested page could not be found."]
-               [:p "Check if you correctly entered the URL and re-submit."]]])))
+               [:p "Check if you correctly entered the URL and re-enter."]]])))
 
 ;; STORE shorty
 
@@ -93,38 +121,17 @@
         (if error
           ;; TODO: handle better with flash message or something
           {:status 500 :body error}
-          (with-flash "Your shorty has been successfully created!" (see-other (resource-url id))))))))
-
-;; SHOW shorty
-
-(defn- render-shorty
-  [shorty req]
-  (html5 {:lang "en"}
-         [:head
-          [:title "Shorty - The coolest URL shortener ever!"]
-          [:meta {:charset "UTF-8"}]
-          [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
-          [:link {:href "https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" :rel "stylesheet"}]]
-         [:body
-          [:main.max-w-2xl.p-4.mx-auto
-           [:h1.text-3xl.text-center.font-bold "Your Shorty"]
-           [:div.my-4.bg-green-300.p-4.rounded (:flash req)]
-           [:div.mt-8 (shareable-url (:urls/id shorty))]
-           [:div (:urls/target_url shorty)]
-           [:div (:urls/created_at shorty)]]]))
-
-(defn show-shorty
-  "Show the resource page of the shortened URL."
-  [req]
-  ;; TODO: validate id so far as is a string of length 8?
-  (when-let [shorty (->> req :path-params :id (sql/get-by-id db :urls))]
-    (ok (render-shorty shorty req))))
+          (let [shorty (sql/get-by-id db :urls id {:builder-fn as-kebab-maps})
+                session-shorties (-> req :session :shorties vec)
+                new-session-shorties (conj session-shorties (update shorty :created-at str))]
+            (-> (see-other "/")
+                (with-flash "Your shorty has been created successfully!")
+                (with-session req [:shorties] new-session-shorties))))))))
 
 ;; REDIRECT shorty
-
 
 (defn redirect-shorty
   "This is the meat of the app: It redirects the shortened URL to the underlying one."
   [req]
-  (when-let [shorty (->> req :path-params :id (sql/get-by-id db :urls))]
+  (when-let [shorty (->> req :path-params :id (sql/get-by-id db :urls {:builder-fn as-kebab-maps}))]
     (temporary-redirect (:urls/target_url shorty))))
