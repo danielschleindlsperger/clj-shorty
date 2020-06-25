@@ -50,8 +50,6 @@ clj-kondo --lint "$(clojure -Spath)"
 
 - Build step for tailwind
 - Favicon
-- Ring middleware
-  - Security
 - validation
   - check if url behind url exists?
   - Check length of target url

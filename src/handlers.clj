@@ -2,12 +2,13 @@
   (:require [hiccup.page :refer [html5]]
             [clojure.string :refer [join]]
             [clojure.java.io :refer [as-url]]
+            [ring.util.anti-forgery :refer [anti-forgery-field]]
             [next.jdbc.sql :as sql]
             [next.jdbc.result-set :as result-set]
             [database :refer [db]]
             [config :refer [cfg]]
             [assets :refer [assets]]
-            [util.http :refer [with-flash with-session ok see-other temporary-redirect]])
+            [util.http :refer [with-flash with-session html see-other temporary-redirect]])
   (:import org.postgresql.util.PSQLException))
 
 (defn as-kebab-maps [rs opts]
@@ -47,6 +48,7 @@
            [:h2.mt-8.text-3xl.font-bold "What's a shorty?"]
            [:p.mt-4 "Shorty is the simplest URL shortener imaginable. Paste in your long URL and we'll give you a short one! The shortened URL, called shorty, can be shared easily and is also fast and reliable to transcribe."]
            [:form.mt-12.flex.max-w-xl {:method "POST" :action "/shorties"}
+            (anti-forgery-field)
             [:input.flex-grow.px-3.py-1.bg-gray-200.placeholder-gray-600.rounded-l
              {:type "text" :name "url" :value "https://example.com" :placeholder "https://example.com"}]
 
@@ -55,12 +57,12 @@
 
 (defn homepage
   [req]
-  (ok (render-homepage req)))
+  (html (render-homepage req)))
 
 ;; 404 page
 (defn not-found-page
   [_]
-  (ok (html5 {:lang "en"}
+  (html (html5 {:lang "en"}
              [:head
               [:title "Not Found.."]
               [:meta {:charset "UTF-8"}]

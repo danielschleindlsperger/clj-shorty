@@ -24,6 +24,13 @@
     :headers {}
     :body body}))
 
+(defn html
+  "200 OK (Success) with HTML body"
+  ([body]
+   {:status 200
+    :headers {"Content-Type" "text/html"}
+    :body body}))
+
 (defn moved-permanently
   "301 Moved Permanently (Redirection)
   This and all future requests should be directed to the given URI."
