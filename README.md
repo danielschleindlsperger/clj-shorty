@@ -49,6 +49,7 @@ clj-kondo --lint "$(clojure -Spath)"
 ## TODO
 
 - Build step for tailwind
+- Favicon
 - Ring middleware
   - Security
 - validation
@@ -61,5 +62,4 @@ clj-kondo --lint "$(clojure -Spath)"
 
 ## Features
 
-- Auto-focus input field
 - Make generated URL copy-able to clipboard

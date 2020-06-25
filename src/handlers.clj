@@ -6,6 +6,7 @@
             [next.jdbc.result-set :as result-set]
             [database :refer [db]]
             [config :refer [cfg]]
+            [assets :refer [assets]]
             [util.http :refer [with-flash with-session ok see-other temporary-redirect]])
   (:import org.postgresql.util.PSQLException))
 
@@ -38,12 +39,13 @@
           [:meta {:charset "UTF-8"}]
           [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
           [:link {:href "https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" :rel "stylesheet"}]]
+         [:script (:js assets)]
          [:body
           [:main.mt-8.max-w-2xl.p-4.mx-auto
            [:h1.text-5xl.text-center.font-bold "Hello Shorty"]
            (flash (:flash req))
-           [:h2.mt-8.text-3xl.font-bold "What's that?"]
-           [:p.mt-4 "Shorty is the simplest URL shortener imaginable. Paste in your long URL and we'll give you a short one! The short URL can be shared easily and is also fast and reliable to transcribe."]
+           [:h2.mt-8.text-3xl.font-bold "What's a shorty?"]
+           [:p.mt-4 "Shorty is the simplest URL shortener imaginable. Paste in your long URL and we'll give you a short one! The shortened URL, called shorty, can be shared easily and is also fast and reliable to transcribe."]
            [:form.mt-12.flex.max-w-xl {:method "POST" :action "/shorties"}
             [:input.flex-grow.px-3.py-1.bg-gray-200.placeholder-gray-600.rounded-l
              {:type "text" :name "url" :value "https://example.com" :placeholder "https://example.com"}]
