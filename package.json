@@ -1,0 +1,25 @@
+{
+  "name": "y",
+  "version": "0.0.0",
+  "description": "A simple URL shortening service.",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+      "css": "tailwindcss build resources/css/app.css -o resources/css/app.out.css",
+      "css:prod": "NODE_ENV=production tailwindcss build resources/css/app.css -o resources/css/app.out.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielschleindlsperger/clj-shorty.git"
+  },
+  "author": "Daniel Schleindlsperger",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danielschleindlsperger/clj-shorty/issues"
+  },
+  "homepage": "https://github.com/danielschleindlsperger/clj-shorty#readme",
+  "devDependencies": {
+    "tailwindcss": "^1.4.6"
+  }
+}

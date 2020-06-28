@@ -19,6 +19,11 @@ A simple URL shortening service.
 
 # revert migration
 ./sqitch revert db:pg://root:root@localhost:5432/shorty
+
+# Fetch Node dependencies
+npm ci
+# Compile frontend assets
+npm run css
 ```
 
 ```sh
@@ -29,6 +34,21 @@ A simple URL shortening service.
 (go) # start the machinery
 
 # if changes are not reflected after evaluation, you can hit `cider-ns-refresh` (CIDER only obviously)
+```
+
+## Build Step
+
+## Server
+
+TODO
+
+### Frontend
+
+To build the CSS for [Tailwind](https://tailwindcss.com), invoke the npm build command.
+
+```sh
+npm run css # Build for development with all classes available.
+npm run css:prod # Build for a production environment with unused classes purged.
 ```
 
 ### Linting
@@ -48,7 +68,6 @@ clj-kondo --lint "$(clojure -Spath)"
 
 ## TODO
 
-- Build step for tailwind
 - Favicon
 - validation
   - check if url behind url exists?

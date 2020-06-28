@@ -38,9 +38,9 @@
          [:head
           [:title "Shorty - The coolest URL shortener ever!"]
           [:meta {:charset "UTF-8"}]
-          [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
-          [:link {:href "https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" :rel "stylesheet"}]]
+          [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]]
          [:script (:js assets)]
+         [:style (:css assets)]
          [:body
           [:main.mt-8.max-w-2xl.p-4.mx-auto
            [:h1.text-5xl.text-center.font-bold "Hello Shorty"]
@@ -63,16 +63,16 @@
 (defn not-found-page
   [_]
   (html (html5 {:lang "en"}
-             [:head
-              [:title "Not Found.."]
-              [:meta {:charset "UTF-8"}]
-              [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
-              [:link {:href "https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" :rel "stylesheet"}]]
-             [:body
-              [:main.mt-8.max-w-2xl.p-4.mx-auto
-               [:h1.text-3xl.text-center.font-bold "Not Found"]
-               [:h2 "The requested page could not be found."]
-               [:p "Check if you correctly entered the URL and re-enter."]]])))
+               [:head
+                [:title "Not Found.."]
+                [:meta {:charset "UTF-8"}]
+                [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
+                [:link {:href "https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" :rel "stylesheet"}]]
+               [:body
+                [:main.mt-8.max-w-2xl.p-4.mx-auto
+                 [:h1.text-3xl.text-center.font-bold "Not Found"]
+                 [:h2 "The requested page could not be found."]
+                 [:p "Check if you correctly entered the URL and re-enter."]]])))
 
 ;; STORE shorty
 

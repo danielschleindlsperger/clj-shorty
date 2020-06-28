@@ -5,8 +5,10 @@
 
 (defn- load-assets
   []
-  (let [js (slurp (io/resource "js/app.js"))]
-    {:js js}))
+  (let [js (slurp (io/resource "js/app.js"))
+        css (slurp (io/resource "css/app.out.css"))]
+    {:js js
+     :css css}))
 
 (declare assets)
 (defstate assets

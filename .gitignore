@@ -1,3 +1,5 @@
+node_modules
 .cpcache
 .nrepl-port
 .clj-kondo/.cache*
+resources/css/app.out.css
