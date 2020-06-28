@@ -22,11 +22,10 @@
 (defn your-shorties
   [shorties]
   (when (peek shorties)
-    [:div.mt-8
-     [:h2.my-4.text-3xl.font-bold "Your shorties"]
+    [:div.mt-12.px-3.border.rounded
      (for [shorty (sort-by :created-at #(compare %2 %1) shorties)]
        (let [{:keys [id target-url]} shorty]
-         [:div.flex.justify-between
+         [:div.flex.justify-between.p-3.border-t.first:border-t-0
           [:div.truncate {:title target-url} target-url]
           [:div.ml-4.font-mono.font-bold
            [:span (:base-url cfg)]
@@ -47,12 +46,11 @@
            (flash (:flash req))
            [:h2.mt-8.text-3xl.font-bold "What's a shorty?"]
            [:p.mt-4 "Shorty is the simplest URL shortener imaginable. Paste in your long URL and we'll give you a short one! The shortened URL, called shorty, can be shared easily and is also fast and reliable to transcribe."]
-           [:form.mt-12.flex.max-w-xl {:method "POST" :action "/shorties"}
+           [:form.mt-12.flex {:method "POST" :action "/shorties"}
             (anti-forgery-field)
             [:input.flex-grow.px-3.py-1.bg-gray-200.placeholder-gray-600.rounded-l
              {:type "text" :name "url" :value "https://example.com" :placeholder "https://example.com"}]
-
-            [:button.px-3.py-1.bg-green-300.rounded-r	{:type "submit"} "Shorten!"]]
+            [:button.px-4.py-2.bg-green-300.rounded-r.font-bold	{:type "submit"} "Shorten!"]]
            (your-shorties (-> req :session :shorties))]]))
 
 (defn homepage
