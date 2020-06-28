@@ -14,6 +14,16 @@ function autoFocusInput() {
   }
 }
 
+function copyLinkToClipboard() {
+  for (const button of document.querySelectorAll('button[data-clipboard]')) {
+    button.addEventListener('click', function () {
+      const url = button.dataset.clipboard
+      navigator.clipboard.writeText(url).then(console.log)
+    })
+  }
+}
+
 ready(function () {
   autoFocusInput()
+  copyLinkToClipboard()
 })

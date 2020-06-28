@@ -11,25 +11,34 @@
             [util.http :refer [with-flash with-session html see-other temporary-redirect]])
   (:import org.postgresql.util.PSQLException))
 
-(defn as-kebab-maps [rs opts]
+(defn- as-kebab-maps [rs opts]
   (let [kebab #(clojure.string/replace % #"_" "-")]
     (result-set/as-unqualified-modified-maps rs (assoc opts :qualifier-fn kebab :label-fn kebab))))
 
-(defn flash
+(defn- flash
   [f]
   (when f [:div.my-8.bg-green-300.p-4.rounded f]))
 
-(defn your-shorties
+(defn- copy-to-clipboard
+  [url]
+  [:button.ml-6.px-3.py-1.flex.items-center.border.border-gray-200.rounded {:data-clipboard url}
+   [:svg {:width "1em" :height "1em" :viewBox "0 0 16 16" :fill "currentColor" :xmlns "http://www.w3.org/2000/svg"}
+    [:path {:fill-rule "evenodd" :d "M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"}]
+    [:path {:fill-rule "evenodd" :d "M9.5 1h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"}]]
+   [:span.text-sm.ml-3 "Copy"]])
+
+(defn- your-shorties
   [shorties]
   (when (peek shorties)
     [:div.mt-12.px-3.border.rounded
      (for [shorty (sort-by :created-at #(compare %2 %1) shorties)]
        (let [{:keys [id target-url]} shorty]
-         [:div.flex.justify-between.p-3.border-t.first:border-t-0
-          [:div.truncate {:title target-url} target-url]
-          [:div.ml-4.font-mono.font-bold
+         [:div.flex.justify-between.items-baseline.p-4.border-t.first:border-t-0
+          [:div.mr-4.truncate {:title target-url} target-url]
+          [:div.ml-auto.font-mono.font-bold
            [:span (:base-url cfg)]
-           [:span (str "/" id)]]]))]))
+           [:span (str "/" id)]]
+          (copy-to-clipboard target-url)]))]))
 
 (defn render-homepage
   [req]
@@ -44,7 +53,7 @@
           [:main.mt-8.max-w-2xl.p-4.mx-auto
            [:h1.text-5xl.text-center.font-bold "Hello Shorty"]
            (flash (:flash req))
-           [:h2.mt-8.text-3xl.font-bold "What's a shorty?"]
+           [:h2.mt-12.text-3xl.font-bold "What's a shorty?"]
            [:p.mt-4 "Shorty is the simplest URL shortener imaginable. Paste in your long URL and we'll give you a short one! The shortened URL, called shorty, can be shared easily and is also fast and reliable to transcribe."]
            [:form.mt-12.flex {:method "POST" :action "/shorties"}
             (anti-forgery-field)
