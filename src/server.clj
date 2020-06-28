@@ -29,6 +29,9 @@
              ["shorties" {:post store-shorty
                           :middleware (concat [parameters-middleware session wrap-flash] security)
                           :conflicting true}]
+             ;; TODO: add actual favicon
+             ["favicon.ico" {:get (constantly {:status 404})
+                             :conflicting true}]
              [":id" {:get redirect-shorty :conflicting true}]])
 
 (def app (ring/ring-handler (ring/router routes) not-found-page))
