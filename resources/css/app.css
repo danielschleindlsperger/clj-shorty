@@ -3,3 +3,12 @@
 @tailwind components;
 
 @tailwind utilities;
+
+.fat-underline:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 5px;
+    bottom: 0;
+    left: 0;
+    background-image: linear-gradient(to left, rgb(99, 255, 219), rgb(98, 233, 219), rgb(96, 210, 218), rgb(95, 188, 218), rgb(94, 165, 217), rgb(92, 143, 217), rgb(91, 120, 216), rgb(89, 98, 216), rgb(88, 75, 215), rgb(87, 53, 215), rgb(85, 30, 214), rgb(84, 8, 214));}

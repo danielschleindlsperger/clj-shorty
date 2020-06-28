@@ -58,7 +58,8 @@
          [:style (:css assets)]
          [:body
           [:main.mt-8.max-w-2xl.p-4.mx-auto
-           [:h1.text-5xl.text-center.font-bold "Hello Shorty"]
+           [:h1.text-5xl.text-center.font-bold
+            [:span.fat-underline.relative.inline-block.pb-8 "Hello Shorty"]]
            (flash (:flash req))
            [:h2.mt-12.text-3xl.font-bold "What's a shorty?"]
            [:p.mt-4 "Shorty is the simplest URL shortener imaginable. Paste in your long URL and we'll give you a short one! The shortened URL, called shorty, can be shared easily and is also fast and reliable to transcribe."]
@@ -66,7 +67,7 @@
             (anti-forgery-field)
             [:input.flex-grow.px-3.py-1.bg-gray-200.placeholder-gray-600.rounded-l
              {:type "text" :name "url" :value "https://example.com" :placeholder "https://example.com"}]
-            [:button.px-4.py-2.bg-green-300.rounded-r.font-bold	{:type "submit"} "Shorten!"]]
+            [:button.px-4.py-2.bg-indigo.rounded-r.font-bold.text-white	{:type "submit"} "Shorten!"]]
            (your-shorties (-> req :session :shorties))]]))
 
 (defn homepage
