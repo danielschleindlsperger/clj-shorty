@@ -72,7 +72,6 @@ clj-kondo --lint "$(clojure -Spath)"
 - validation
   - check if url behind url exists?
   - Check length of target url
-  - Display validation errors in flash
 - Postgres connection pool
 - CI
 - Deployment

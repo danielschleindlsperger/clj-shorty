@@ -8,7 +8,7 @@
             [database :refer [db]]
             [config :refer [cfg]]
             [assets :refer [assets]]
-            [util.http :refer [with-flash with-session html see-other temporary-redirect]])
+            [util.http :refer [with-flash with-session html see-other moved-temporarily temporary-redirect]])
   (:import org.postgresql.util.PSQLException))
 
 (defn- as-kebab-maps [rs opts]
@@ -16,8 +16,15 @@
     (result-set/as-unqualified-modified-maps rs (assoc opts :qualifier-fn kebab :label-fn kebab))))
 
 (defn- flash
+  "Render a flash message (usually from the session).
+  Takes a map with the key :type which can either be :success or :error and a key :message with a message text of type string."
   [f]
-  (when f [:div.my-8.bg-green-300.p-4.rounded f]))
+  (when f
+    (let [base-classes "my-12 p-4 rounded"
+          success-classes "bg-green-300"
+          error-classes "bg-red-500"
+          class [base-classes (if (= :success (:type f)) success-classes error-classes)]]
+      [:div {:class class} (:message f)])))
 
 (defn- copy-to-clipboard
   [url]
@@ -30,7 +37,7 @@
 (defn- your-shorties
   [shorties]
   (when (peek shorties)
-    [:div.mt-12.px-3.border.rounded
+    [:div.mt-12.px-4.border.rounded
      (for [shorty (sort-by :created-at #(compare %2 %1) shorties)]
        (let [{:keys [id target-url]} shorty]
          [:div.flex.justify-between.items-baseline.p-4.border-t.first:border-t-0
@@ -122,21 +129,25 @@
            {:url url}))
        (catch Exception e {:error (str "URL invalid: " (.getMessage e))})))
 
+(defn- return-with-error
+  "Redirect to / with an error flash containing the supplied message."
+  [message]
+  (-> (moved-temporarily "/")
+      (with-flash :error message)))
+
 (defn store-shorty
   [req]
   (let [{:keys [error url]} (-> req :params (get "url") validate-url)]
     (if error
-      ;; TODO: handle better with flash message or something
-      {:status 500 :body error}
+      (return-with-error "URL is not in a valid format. Please try again.")
       (let [{:keys [error id]} (insert-shorty url)]
         (if error
-          ;; TODO: handle better with flash message or something
-          {:status 500 :body error}
+          (return-with-error "Error while shortening the URL. Please try again.")
           (let [shorty (sql/get-by-id db :urls id {:builder-fn as-kebab-maps})
                 session-shorties (-> req :session :shorties vec)
                 new-session-shorties (conj session-shorties (update shorty :created-at str))]
             (-> (see-other "/")
-                (with-flash "Your shorty has been created successfully!")
+                (with-flash :success "Your shorty has been created successfully!")
                 (with-session req [:shorties] new-session-shorties))))))))
 
 ;; REDIRECT shorty

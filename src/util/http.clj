@@ -3,8 +3,8 @@
 (defn with-flash
   "Add a flash message to the next request. Useful for redirects and showing a message.
   See: https://github.com/ring-clojure/ring/blob/master/ring-core/src/ring/middleware/flash.clj"
-  [res flash]
-  (assoc res :flash flash))
+  [res type message]
+  (assoc res :flash {:type type :message message}))
 
 (defn with-session
   "Add a value v to key k in the session.
@@ -38,6 +38,12 @@
    {:status 301
     :headers {"Location" url}
     :body ""}))
+
+(defn moved-temporarily
+  "302 Found - Moved Temporarily (Redirection)
+  This and all future requests should be directed to the given URI."
+  ([url]
+   {:status 302 :headers {"Location" url} :body ""}))
 
 (defn see-other
   "303 See Other (Redirection)
