@@ -66,7 +66,7 @@
            [:form.mt-12.flex {:method "POST" :action "/shorties"}
             (anti-forgery-field)
             [:input.flex-grow.px-3.py-1.bg-gray-200.placeholder-gray-600.rounded-l
-             {:type "text" :name "url" :value "https://example.com" :placeholder "https://example.com"}]
+             {:type "text" :name "url" :placeholder "https://example.com"}]
             [:button.px-4.py-2.bg-indigo.rounded-r.font-bold.text-white	{:type "submit"} "Shorten!"]]
            (your-shorties (-> req :session :shorties))]]))
 
