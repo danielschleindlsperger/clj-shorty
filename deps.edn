@@ -13,4 +13,6 @@
          com.zaxxer/HikariCP {:mvn/version "3.4.5"}
          hiccup {:mvn/version "2.0.0-alpha2"}}
  :paths ["src" "resources"]
- :aliases {:dev {:extra-paths ["dev"]}}}
+ :aliases {:dev {:extra-paths ["dev"]}
+           :uberjar {:extra-deps {uberdeps {:mvn/version "0.1.10"}}
+                     :main-opts ["-m" "uberdeps.uberjar" "--target target/clj-shorty.jar"]}}}
