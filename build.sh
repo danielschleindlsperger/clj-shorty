@@ -2,12 +2,9 @@
 
 set -e
 
-docker login https://docker.pkg.github.com --username $DOCKER_USER --password $DOCKER_PASSWORD
+docker login --username=_ --password=${HEROKU_TOKEN} registry.heroku.com
 
+HEROKU_APP_NAME="clj-shorty"
 
-IMAGE_NAME="docker.pkg.github.com/danielschleindlsperger/clj-shorty/clj-shorty"
-VERSION=$(git show -s --format=%ci-%h $GITHUB_SHA | sed 's/+//g' | sed 's/[:+ ]/-/g')
-NAME="${IMAGE_NAME}:${VERSION}"
-
-docker build -t ${NAME} .
-docker push ${NAME}
+docker build -t registry.heroku.com/${HEROKU_APP_NAME}/web .
+docker push registry.heroku.com/${HEROKU_APP_NAME}/web
