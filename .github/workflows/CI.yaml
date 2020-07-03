@@ -1,0 +1,19 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  build-and-push-container:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v1
+      - name: Build container
+        env:
+          DOCKER_USER: danielschleindlsperger
+          DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: ./build.sh
+        shell: bash
