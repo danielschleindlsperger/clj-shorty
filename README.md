@@ -74,4 +74,9 @@ clj-kondo --lint "$(clojure -Spath)"
   - Check length of target url
 - CI
 - Deployment
+  - Fix Postgres JDBC URL
+  - Fix inline CSS
+  - Add compression support
+    - Brotli middleware?
+- Fix lighthouse warnings
 - Sessions in Postgres?
