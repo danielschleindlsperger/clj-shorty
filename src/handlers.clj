@@ -39,13 +39,14 @@
   (when (peek shorties)
     [:div.mt-12.px-4.border.rounded
      (for [shorty (sort-by :created-at #(compare %2 %1) shorties)]
-       (let [{:keys [id target-url]} shorty]
+       (let [{:keys [id target-url]} shorty
+             base-url (:base-url cfg)]
          [:div.flex.justify-between.items-baseline.p-4.border-t.first:border-t-0
           [:div.mr-4.truncate {:title target-url} target-url]
           [:div.ml-auto.font-mono.font-bold
-           [:span (:base-url cfg)]
+           [:span base-url]
            [:span (str "/" id)]]
-          (copy-to-clipboard target-url)]))]))
+          (copy-to-clipboard (str base-url "/" id))]))]))
 
 (defn render-homepage
   [req]
