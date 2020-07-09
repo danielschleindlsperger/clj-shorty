@@ -8,5 +8,5 @@
   [& args]
   (println "\nCreating your server...")
   (mount/start)
-  ;; TODO: shutdown mount compnonents on shutdown signal
-  )
+  ;; TODO: shutdown mount components on shutdown signal
+  (println "Done.."))

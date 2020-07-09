@@ -1,5 +1,6 @@
 (ns dev
   (:require [mount.core :as mount]
+            [server]
             [clojure.tools.namespace.repl :as ctnr]))
 
 (defn start []
