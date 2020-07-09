@@ -38,5 +38,5 @@
 
 (declare web-server)
 (defstate web-server
-  :start (run-server app)
+  :start (run-server app {:port (:port cfg)})
   :stop (web-server))
