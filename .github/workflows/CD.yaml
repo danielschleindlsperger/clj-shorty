@@ -1,0 +1,31 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  IMAGE: 'docker.pkg.github.com/danielschleindlsperger/clj-shorty/clj-shorty'
+  VERSION: ${{ git show -s --format=%ci-%h $SHA | sed 's/+//g' | sed 's/[:+ ]/-/g' }}
+
+jobs:
+  build-and-push-container:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v1
+      - name: Build container
+        env:
+          DOCKER_USER: danielschleindlsperger
+          DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: ./build.sh
+        shell: bash
+      - name: Deploy container
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            docker run --restart-always -ti --network postgres ${{ IMAGE }}:${{ VERSION }}
