@@ -1,5 +1,6 @@
 node_modules
 target
+.calva
 .cpcache
 .nrepl-port
 .clj-kondo/.cache*
