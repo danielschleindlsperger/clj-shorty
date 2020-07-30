@@ -7,7 +7,6 @@ on:
 
 env:
   IMAGE: 'docker.pkg.github.com/danielschleindlsperger/clj-shorty/clj-shorty'
-  VERSION: ${{ git show -s --format=%ci-%h $SHA | sed 's/+//g' | sed 's/[:+ ]/-/g' }}
 
 jobs:
   build-and-push-container:
@@ -15,17 +14,22 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v1
-      - name: Build container
-        env:
-          DOCKER_USER: danielschleindlsperger
-          DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-        run: ./build.sh
-        shell: bash
-      - name: Deploy container
-        uses: appleboy/ssh-action@master
+      - name: Determine version
+        id: version
+        uses: ./.github/actions/version-commit
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v1
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script_stop: true
-          script: |
-            docker run --restart-always -ti --network postgres ${{ IMAGE }}:${{ VERSION }}
+          username: danielschleindlsperger
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: danielschleindlsperger/clj-shorty/app
+          tags: 'latest,${{ steps.version.outputs.version }}'
+      # - name: Deploy container
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.SERVER_HOST }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     script_stop: true
+      #     script: |
+      #       docker run --restart-always -ti --network postgres ${{ IMAGE }}:${{ VERSION }}

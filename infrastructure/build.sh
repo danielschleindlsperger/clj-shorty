@@ -3,7 +3,8 @@
 set -e
 
 SHA=$(git rev-parse --short HEAD)
-VERSION=$(git show -s --format=%ci-%h $SHA | sed 's/+//g' | sed 's/[:+ ]/-/g')
+#VERSION=$(git show -s --format=%ci-%h $SHA | sed 's/+//g' | sed 's/[:+ ]/-/g')
+VERSION="${VERSION}"
 IMAGE="docker.pkg.github.com/danielschleindlsperger/clj-shorty/clj-shorty:${VERSION}"
 SERVER_HOST=94.130.75.201
 
