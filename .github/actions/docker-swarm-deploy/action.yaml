@@ -1,0 +1,32 @@
+name: 'Deploy to Docker Swarm'
+description: 'Deploy an application to your remote docker swarm.'
+inputs:
+  registry:
+    description: 'The Docker registry to use.'
+    required: true
+  username:
+    description: 'Docker registry username.'
+    required: true
+  password:
+    description: 'Docker registry password.'
+    required: true
+  ssh_private_key:
+    description: 'SSH private key to connect to the swarm manager.'
+    required: true
+  remote_docker_host:
+    description: 'username@hostname combination to connect to the swarm manager'
+    required: true
+  stack_file:
+    description: 'Path to the swarm deployment manifest file.'
+    required: true
+  stack_name:
+    description: 'Name of the swarm stack.'
+    required: true
+outputs: {}
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args: []
+branding:
+  icon: globe
+  color: blue
