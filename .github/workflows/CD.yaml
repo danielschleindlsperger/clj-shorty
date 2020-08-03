@@ -18,9 +18,6 @@ jobs:
         id: version
         uses: ./.github/actions/version-commit
 
-      - name: Enable Docker layer caching
-        uses: satackey/action-docker-layer-caching@v0.0.4
-
       - name: Build and push Docker images
         uses: docker/build-push-action@v1
         with:
