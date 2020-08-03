@@ -56,6 +56,7 @@
           [:meta {:charset "UTF-8"}]
           [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]]
          [:meta {:name "description" :content "Shorty makes your life easier by replacing your long URLs with short, readable and memorizable ones."}]
+         [:script {:async true :defer true :data-domain "shorty.lchthbr.xyz" :src "https://plausible.io/js/plausible.js"}]
          [:script (:js assets)]
          [:style (:css assets)]
          [:body
