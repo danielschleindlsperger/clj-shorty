@@ -53,13 +53,14 @@ npm run css:prod # Build for a production environment with unused classes purged
 
 ### Linting
 
-[Install clj-kondo](https://github.com/borkdude/clj-kondo/blob/master/doc/install.md) to be available in $PATH.
+[Install clj-kondo](https://github.com/borkdude/clj-kondo/blob/master/doc/install.md) to be available in \$PATH.
 
 ```sh
 clj-kondo --lint "$(clojure -Spath)"
 ```
 
-*Hint* clj-kondo reports `unresolved symbol` when using `mount`'s `defstate` macro. Circumvent with the usage of `declare`:
+_Hint_ clj-kondo reports `unresolved symbol` when using `mount`'s `defstate` macro. Circumvent with the usage of `declare`:
+
 ```clj
 (declare db)
 (defstate db
@@ -72,11 +73,6 @@ clj-kondo --lint "$(clojure -Spath)"
 - validation
   - check if url behind url exists?
   - Check length of target url
-- CI
 - Deployment
-  - Fix Postgres JDBC URL
-  - Fix inline CSS
   - Add compression support
-    - Brotli middleware?
-- Fix lighthouse warnings
 - Sessions in Postgres?
