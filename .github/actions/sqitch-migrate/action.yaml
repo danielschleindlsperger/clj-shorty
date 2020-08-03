@@ -1,0 +1,14 @@
+name: 'Sqitch Migrate'
+description: 'Migrate your database with Sqitch https://sqitch.org/'
+inputs:
+  database_url:
+    description: 'URL to access the database, in sqitch format, e.g. db:pg://root:root@localhost:5432/my_db'
+    required: true
+outputs: {}
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args: []
+branding:
+  icon: database
+  color: blue

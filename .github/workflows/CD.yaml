@@ -32,6 +32,11 @@ jobs:
           repository: ${{ env.REPOSITORY }}
           tags: 'latest,${{ steps.version.outputs.version }}'
 
+      - name: Migrate database
+        uses: ./.github/actions/sqitch-migrate
+        with:
+          database_url: ${{ secrets.SQITCH_DATABASE_URL }}
+
       # TODO: this could be another job that depends on the build job but only runs on master
       - name: Deploy to CapRover
         uses: ./.github/actions/caprover-deploy

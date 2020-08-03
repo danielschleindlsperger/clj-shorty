@@ -1,6 +1,4 @@
-FROM node:12-alpine
-
-RUN npm install -g caprover
+FROM sqitch/sqitch:latest
 
 COPY entrypoint.sh /entrypoint.sh
 
