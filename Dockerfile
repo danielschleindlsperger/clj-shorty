@@ -6,10 +6,12 @@ WORKDIR /app
 COPY package*.json /app/
 COPY tailwind.config.js /app/
 COPY resources /app/resources/
+
+RUN npm ci
+
 # src is required to prune the tailwind css classnames
 COPY src /app/src
 
-RUN npm ci
 RUN npm run css:prod
 
 ##
