@@ -32,6 +32,10 @@
              ;; TODO: add actual favicon
              ["favicon.ico" {:get (constantly {:status 404})
                              :conflicting true}]
+             ["robots.txt" {:get (constantly {:status 200
+                                              :body "User-agent: *\nDisallow:"
+                                              :headers {"content-type" "text/plain; charset=UTF-8"}})
+                            :conflicting true}]
              [":id" {:get redirect-shorty :conflicting true}]])
 
 (def app (ring/ring-handler (ring/router routes) not-found-page))
