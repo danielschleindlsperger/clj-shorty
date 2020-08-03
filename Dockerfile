@@ -6,11 +6,15 @@ WORKDIR /app
 COPY package*.json /app/
 COPY tailwind.config.js /app/
 COPY resources /app/resources/
+# src is required to prune the tailwind css classnames
+COPY src /app/src
 
 RUN npm ci
 RUN npm run css:prod
 
-# Build Clojure code
+##
+## Build Clojure code
+##
 
 FROM clojure:openjdk-13-tools-deps-slim-buster as builder
 
@@ -29,7 +33,10 @@ COPY --from=assets /app/resources /app/resources
 
 RUN clj -A:uberjar
 
-# use clean base image for distribution
+##
+## Clean base image for distribution
+##
+
 FROM openjdk:13-slim-buster
 
 WORKDIR /app
