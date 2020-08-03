@@ -13,9 +13,13 @@ eval $(ssh-agent)
 ssh-add "$HOME/.ssh/id_rsa"
 
 echo "Adding SSH fingerprint to known hosts."
-HOSTNAME=$(echo $FOO | sed 's/.*@//')
-ssh-keyscan "${HOSTNAME}" >> "$HOME/.ssh/known_hosts"
+HOSTNAME=$(echo $INPUT_REMOTE_DOCKER_HOST | sed 's/.*@//')
+echo $HOSTNAME
+ssh-keyscan -p 22 -t rsa "${HOSTNAME}" >> "$HOME/.ssh/known_hosts"
 
 echo "Starting Swarm deployment"
+COMPOSE_FILE=`realpath "${GITHUB_WORKSPACE}/${INPUT_STACK_FILE}"`
+echo $COMPOSE_FILE
+
 docker --log-level debug --host "ssh://${INPUT_REMOTE_DOCKER_HOST}" \
-stack deploy -c ${INPUT_STACK_FILE} ${INPUT_STACK_NAME}
+stack deploy -c ${COMPOSE_FILE} --with-registry-auth --resolve-image=always ${INPUT_STACK_NAME}
