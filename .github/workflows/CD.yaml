@@ -6,7 +6,8 @@ on:
       - master
 
 env:
-  IMAGE: 'docker.pkg.github.com/danielschleindlsperger/clj-shorty/app'
+  REGISTRY: 'rg.nl-ams.scw.cloud'
+  REPOSITORY: 'petprojects/clj-shorty/app'
 
 jobs:
   build-and-push-container:
@@ -14,17 +15,23 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v1
+
       - name: Determine version
         id: version
         uses: ./.github/actions/version-commit
+
+      - name: Enable Docker layer caching
+        uses: satackey/action-docker-layer-caching@v0.0.4
+
       - name: Build and push Docker images
         uses: docker/build-push-action@v1
         with:
           username: nologin
           password: ${{ secrets.SCALEWAY_SECRET_KEY }}
-          registry: rg.nl-ams.scw.cloud
-          repository: petprojects/clj-shorty/app
+          registry: ${{ env.REGISTRY }}
+          repository: ${{ env.REPOSITORY }}
           tags: 'latest,${{ steps.version.outputs.version }}'
+
       # TODO: this could be another job that depends on the build job but only runs on master
       - name: Deploy to CapRover
         uses: ./.github/actions/caprover-deploy
@@ -32,4 +39,4 @@ jobs:
           caprover_url: 'https://captain.lchthbr.xyz'
           password: ${{ secrets.CAPROVER_SECRET }}
           app_name: clj-shorty
-          image_name: '${{ env.IMAGE }}:${{ steps.version.outputs.version }}'
+          image_name: '${{ env.REGISTRY }}/${{ env.REPOSITORY}}:${{ steps.version.outputs.version }}'
