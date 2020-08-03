@@ -66,8 +66,10 @@
            [:p.mt-4 "Shorty is the simplest URL shortener imaginable. Paste in your long URL and we'll give you a short one! The shortened URL, called shorty, can be shared easily and is also fast and reliable to transcribe."]
            [:form.mt-12.flex {:method "POST" :action "/shorties"}
             (anti-forgery-field)
-            [:input.flex-grow.px-3.py-1.bg-gray-200.placeholder-gray-600.rounded-l
-             {:type "text" :name "url" :placeholder "https://example.com"}]
+            [:label.flex-grow.flex
+             [:span.sr-only "URL"]
+             [:input.flex-grow.px-3.py-1.bg-gray-200.placeholder-gray-600.rounded-l
+              {:type "text" :name "url" :placeholder "https://example.com"}]]
             [:button.px-4.py-2.bg-indigo.rounded-r.font-bold.text-white	{:type "submit"} "Shorten!"]]
            (your-shorties (-> req :session :shorties))]]))
 
