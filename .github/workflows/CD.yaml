@@ -17,7 +17,6 @@ jobs:
       - name: Determine version
         id: version
         uses: ./.github/actions/version-commit
-
       - name: Build and push Docker images
         uses: docker/build-push-action@v1
         with:
@@ -45,6 +44,11 @@ jobs:
         uses: ./.github/actions/sqitch-migrate
         with:
           database_url: ${{ secrets.SQITCH_DATABASE_URL }}
+          ssh_tunnel_enable: true
+          ssh_tunnel_mapping: '5555:srv-captain--postgres-db:5432'
+          ssh_tunnel_destination: 'root@${{ secrets.SSH_HOST }}'
+          ssh_tunnel_port: '4646'
+          ssh_tunnel_password: ${{ secrets.SSH_PASSWORD }}
 
       - name: Deploy to CapRover
         uses: ./.github/actions/caprover-deploy

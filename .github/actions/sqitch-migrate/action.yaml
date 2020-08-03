@@ -4,6 +4,21 @@ inputs:
   database_url:
     description: 'URL to access the database, in sqitch format, e.g. db:pg://root:root@localhost:5432/my_db'
     required: true
+    ssh_tunnel_enable:
+      description: 'Enable SSH tunneling to a remote host. Useful if the database is not exposed publicly but can be reached with an SSH proxy container. Note the `database_url` must now point to the local proxy target. If this is set to `true` you must set all other ssh related variables.'
+      required: false
+    ssh_tunnel_mapping:
+      description: 'Mapping in the form `$LOCAL_PORT:$REMOTE_HOST:$REMOTE_PORT`.'
+      required: false
+    ssh_tunnel_destination:
+      description: 'Username/host combination, for example `root@123.123.123.123`'
+      required: false
+    ssh_tunnel_port:
+      description: 'SSH port on the target host. Usually 22.'
+      required: false
+    ssh_tunnel_password:
+      description: 'SSH password'
+      required: false
 outputs: {}
 runs:
   using: 'docker'
