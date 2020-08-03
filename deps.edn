@@ -1,5 +1,7 @@
 {:deps  {org.clojure/clojure {:mvn/version "1.10.1"}
          org.clojure/tools.namespace {:mvn/version "1.0.0"}
+         com.taoensso/timbre {:mvn/version "4.10.0"}
+         com.fzakaria/slf4j-timbre {:mvn/version "0.3.19"}
          mount {:mvn/version "0.1.16"}
          aero {:mvn/version "1.1.6"}
          http-kit/http-kit {:mvn/version "2.3.0"}
