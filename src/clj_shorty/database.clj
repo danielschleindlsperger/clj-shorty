@@ -1,8 +1,8 @@
-(ns database
+(ns clj-shorty.database
   (:require [mount.core :refer [defstate]]
             [next.jdbc :as jdbc]
             [next.jdbc.connection :as connection]
-            [config :refer [cfg]])
+            [clj-shorty.config :refer [cfg]])
   (:import (com.zaxxer.hikari HikariDataSource)))
 
 (defn- mk-db

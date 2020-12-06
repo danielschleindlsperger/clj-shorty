@@ -1,4 +1,4 @@
-(ns assets
+(ns clj-shorty.assets
   (:require
    [clojure.java.io :as io]
    [mount.core :refer [defstate]]))

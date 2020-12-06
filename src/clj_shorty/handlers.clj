@@ -1,14 +1,14 @@
-(ns handlers
+(ns clj-shorty.handlers
   (:require [hiccup.page :refer [html5]]
             [clojure.string :refer [join]]
             [clojure.java.io :refer [as-url]]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [next.jdbc.sql :as sql]
             [next.jdbc.result-set :as result-set]
-            [database :refer [db]]
-            [config :refer [cfg]]
-            [assets :refer [assets]]
-            [util.http :refer [with-flash with-session html see-other moved-temporarily temporary-redirect]])
+            [clj-shorty.database :refer [db]]
+            [clj-shorty.config :refer [cfg]]
+            [clj-shorty.assets :refer [assets]]
+            [clj-shorty.util.http :refer [with-flash with-session html see-other moved-temporarily temporary-redirect]])
   (:import org.postgresql.util.PSQLException))
 
 (defn- as-kebab-maps [rs opts]

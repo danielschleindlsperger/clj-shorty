@@ -1,8 +1,8 @@
-(ns main
+(ns clj-shorty.main
   (:gen-class)
   (:require [mount.core :as mount]
             [taoensso.timbre :as timbre]
-            [server]))
+            [clj-shorty.server]))
 
 (defn -main
   "The main entry point when the app is not running in REPL-mode."

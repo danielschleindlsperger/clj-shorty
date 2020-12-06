@@ -1,4 +1,4 @@
-(ns server
+(ns clj-shorty.server
   (:gen-class)
   (:require [mount.core :refer [defstate] :as mount]
             [org.httpkit.server :refer [run-server]]
@@ -9,8 +9,8 @@
             [ring.middleware.flash :refer [wrap-flash]]
             [ring.middleware.x-headers :refer [wrap-content-type-options wrap-frame-options wrap-xss-protection]]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
-            [config :refer [cfg]]
-            [handlers :refer [homepage not-found-page redirect-shorty store-shorty]]))
+            [clj-shorty.config :refer [cfg]]
+            [clj-shorty.handlers :refer [homepage not-found-page redirect-shorty store-shorty]]))
 
 (def session [wrap-session {:store (cookie-store {:key (:session-secret cfg)})
                             :cookie-name "shorty-session"

@@ -1,4 +1,4 @@
-(ns util.http)
+(ns clj-shorty.util.http)
 
 (defn with-flash
   "Add a flash message to the next request. Useful for redirects and showing a message.
