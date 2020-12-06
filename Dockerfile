@@ -47,4 +47,4 @@ WORKDIR /app
 COPY --from=builder /app/target/clj-shorty.jar /app/app.jar
 
 # set the command, with proper container support
-CMD ["java","-XX:+UseContainerSupport","-XX:+UnlockExperimentalVMOptions","-cp","/app/app.jar","clojure.main","-m","main"]
+CMD ["java","-XX:+UseContainerSupport","-XX:+UnlockExperimentalVMOptions","-cp","/app/app.jar","clojure.main","-m","clj-shorty.main"]
