@@ -10,7 +10,7 @@
   (timbre/info "Bootstrapping the application ...")
   (let [system (ig/init config)]
     (-> (Runtime/getRuntime)
-        (.addShutdownHook (fn []
-                            (timbre/info "Shutting down system")
-                            (ig/halt! system))))
+        (.addShutdownHook (Thread. ^Runnable (fn []
+                                               (timbre/info "Shutting down system")
+                                               (ig/halt! system)))))
     (timbre/info "Application is ready.")))
