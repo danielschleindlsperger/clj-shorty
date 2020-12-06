@@ -1,13 +1,16 @@
 (ns clj-shorty.main
   (:gen-class)
-  (:require [mount.core :as mount]
+  (:require [integrant.core :as ig]
             [taoensso.timbre :as timbre]
-            [clj-shorty.server]))
+            [clj-shorty.system :refer [config]]))
 
 (defn -main
   "The main entry point when the app is not running in REPL-mode."
   [& args]
   (timbre/info "Bootstrapping the application ...")
-  (mount/start)
-  ;; TODO: shutdown mount components on shutdown signal
-  (timbre/info "Application is ready."))
+  (let [system (ig/init config)
+        (-> (Runtime/getRuntime)
+            (.addShutdownHook (fn []
+                                (timbre/info "Shutting down system")
+                                (ig/halt system))))]
+    (timbre/info "Application is ready.")))

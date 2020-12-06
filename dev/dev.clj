@@ -1,30 +1,5 @@
 (ns dev
-  (:require [mount.core :as mount]
-            [clj-shorty.server]
-            [clojure.tools.namespace.repl :as ctnr]))
+  (:require [integrant.repl :refer [clear go halt prep init reset reset-all]]
+            [clj-shorty.system :refer [config]]))
 
-(defn start []
-  (mount/start))
-
-(defn stop []
-  (mount/stop))
-
-(defn refresh []
-  (stop)
-  (ctnr/refresh))
-
-(defn refresh-all []
-  (stop)
-  (ctnr/refresh-all))
-
-(defn go
-  "starts all states defined by defstate"
-  []
-  (start)
-  :ready)
-
-(defn reset
-  "stops all states defined by defstate, reloads modified source files, and restarts the states"
-  []
-  (stop)
-  (ctnr/refresh :after 'dev/go))
+(integrant.repl/set-prep! (constantly config))

@@ -2,7 +2,7 @@
          org.clojure/tools.namespace {:mvn/version "1.0.0"}
          com.taoensso/timbre {:mvn/version "4.10.0"}
          com.fzakaria/slf4j-timbre {:mvn/version "0.3.19"}
-         mount {:mvn/version "0.1.16"}
+         integrant/integrant {:mvn/version "0.8.0"}
          aero {:mvn/version "1.1.6"}
          http-kit/http-kit {:mvn/version "2.3.0"}
          metosin/reitit-ring {:mvn/version "0.5.2"}
@@ -15,6 +15,7 @@
          com.zaxxer/HikariCP {:mvn/version "3.4.5"}
          hiccup {:mvn/version "2.0.0-alpha2"}}
  :paths ["src" "resources"]
- :aliases {:dev {:extra-paths ["dev"]}
+ :aliases {:dev {:extra-paths ["dev"]
+                 :extra-deps {integrant/repl {:mvn/version "0.3.2"}}}
            :uberjar {:extra-deps {uberdeps {:mvn/version "0.1.10"}}
                      :main-opts ["-m" "uberdeps.uberjar" "--target target/clj-shorty.jar"]}}}

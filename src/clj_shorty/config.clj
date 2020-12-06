@@ -1,5 +1,5 @@
 (ns clj-shorty.config
-  (:require [mount.core :refer [defstate]]
+  (:require [integrant.core :as ig]
             [aero.core :as aero]
             [clojure.java.io :as io]))
 
@@ -14,6 +14,4 @@
       (aero/read-config)
       (update :session-secret str->byte-arr)))
 
-(declare cfg)
-(defstate cfg
-  :start (config))
+(defmethod ig/init-key :clj-shorty/config [_ _opts] (config))

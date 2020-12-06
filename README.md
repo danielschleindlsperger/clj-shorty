@@ -32,6 +32,8 @@ npm run css
 (dev) # switch to dev namespace
 
 (go) # start the machinery
+(reset) # reload all changed namespaces and reload the system
+(halt) # stop the system
 
 # if changes are not reflected after evaluation, you can hit `cider-ns-refresh` (CIDER only obviously)
 ```
@@ -57,14 +59,6 @@ npm run css:prod # Build for a production environment with unused classes purged
 
 ```sh
 clj-kondo --lint "$(clojure -Spath)"
-```
-
-_Hint_ clj-kondo reports `unresolved symbol` when using `mount`'s `defstate` macro. Circumvent with the usage of `declare`:
-
-```clj
-(declare db)
-(defstate db
-  :start {})
 ```
 
 ## TODO

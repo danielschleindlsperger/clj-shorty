@@ -5,9 +5,6 @@
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [next.jdbc.sql :as sql]
             [next.jdbc.result-set :as result-set]
-            [clj-shorty.database :refer [db]]
-            [clj-shorty.config :refer [cfg]]
-            [clj-shorty.assets :refer [assets]]
             [clj-shorty.util.http :refer [with-flash with-session html see-other moved-temporarily temporary-redirect]])
   (:import org.postgresql.util.PSQLException))
 
@@ -35,7 +32,7 @@
    [:span.text-sm.ml-3 "Copy"]])
 
 (defn- your-shorties
-  [shorties]
+  [cfg shorties]
   (when (peek shorties)
     [:div.mt-12.px-4.border.rounded
      (for [shorty (sort-by :created-at #(compare %2 %1) shorties)]
@@ -48,36 +45,33 @@
            [:span (str "/" id)]]
           (copy-to-clipboard (str base-url "/" id))]))]))
 
-(defn render-homepage
-  [req]
-  (html5 {:lang "en"}
-         [:head
-          [:title "Shorty - The coolest URL shortener ever!"]
-          [:meta {:charset "UTF-8"}]
-          [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]]
-         [:meta {:name "description" :content "Shorty makes your life easier by replacing your long URLs with short, readable and memorizable ones."}]
-         [:script {:async true :defer true :data-domain "shorty.lchthbr.xyz" :src "https://plausible.io/js/plausible.js"}]
-         [:script (:js assets)]
-         [:style (:css assets)]
-         [:body
-          [:main.mt-8.max-w-2xl.p-4.mx-auto
-           [:h1.text-5xl.text-center.font-bold
-            [:span.fat-underline.relative.inline-block.pb-8 "Hello Shorty"]]
-           (flash (:flash req))
-           [:h2.mt-12.text-3xl.font-bold "What's a shorty?"]
-           [:p.mt-4 "Shorty is the simplest URL shortener imaginable. Paste in your long URL and we'll give you a short one! The shortened URL, called shorty, can be shared easily and is also fast and reliable to transcribe."]
-           [:form.mt-12.flex {:method "POST" :action "/shorties"}
-            (anti-forgery-field)
-            [:label.flex-grow.flex
-             [:span.sr-only "URL"]
-             [:input.flex-grow.px-3.py-1.bg-gray-200.placeholder-gray-600.rounded-l
-              {:type "text" :name "url" :placeholder "https://example.com"}]]
-            [:button.px-4.py-2.bg-indigo.rounded-r.font-bold.text-white	{:type "submit"} "Shorten!"]]
-           (your-shorties (-> req :session :shorties))]]))
-
 (defn homepage
-  [req]
-  (html (render-homepage req)))
+  [cfg assets]
+  (fn [req]
+    (html (html5 {:lang "en"}
+                 [:head
+                  [:title "Shorty - The coolest URL shortener ever!"]
+                  [:meta {:charset "UTF-8"}]
+                  [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]]
+                 [:meta {:name "description" :content "Shorty makes your life easier by replacing your long URLs with short, readable and memorizable ones."}]
+                 [:script {:async true :defer true :data-domain "shorty.lchthbr.xyz" :src "https://plausible.io/js/plausible.js"}]
+                 [:script (:js assets)]
+                 [:style (:css assets)]
+                 [:body
+                  [:main.mt-8.max-w-2xl.p-4.mx-auto
+                   [:h1.text-5xl.text-center.font-bold
+                    [:span.fat-underline.relative.inline-block.pb-8 "Hello Shorty"]]
+                   (flash (:flash req))
+                   [:h2.mt-12.text-3xl.font-bold "What's a shorty?"]
+                   [:p.mt-4 "Shorty is the simplest URL shortener imaginable. Paste in your long URL and we'll give you a short one! The shortened URL, called shorty, can be shared easily and is also fast and reliable to transcribe."]
+                   [:form.mt-12.flex {:method "POST" :action "/shorties"}
+                    (anti-forgery-field)
+                    [:label.flex-grow.flex
+                     [:span.sr-only "URL"]
+                     [:input.flex-grow.px-3.py-1.bg-gray-200.placeholder-gray-600.rounded-l
+                      {:type "text" :name "url" :placeholder "https://example.com"}]]
+                    [:button.px-4.py-2.bg-indigo.rounded-r.font-bold.text-white	{:type "submit"} "Shorten!"]]
+                   (your-shorties cfg (-> req :session :shorties))]]))))
 
 ;; 404 page
 (defn not-found-page
@@ -114,12 +108,12 @@
   If the id already exists it will retry the operatoin up to 5 times and then abort with a
   return value of {:error error}.
   If it succeeds, it returns a map with the keys :id and :url"
-  ([url] (insert-shorty url 0))
-  ([url n]
+  ([ds url] (insert-shorty url 0))
+  ([ds url n]
    (if (< 5 n)
      {:error "Could not find unique id after 5 tries."}
      (let [id (gen-readable-id)]
-       (try (sql/insert! db :urls {:id id :target_url url})
+       (try (sql/insert! ds :urls {:id id :target_url url})
             {:id id :url url}
             (catch PSQLException e (if (unique-violation? e)
                                      (insert-shorty url (inc n))
@@ -142,26 +136,29 @@
       (with-flash :error message)))
 
 (defn store-shorty
-  [req]
-  (let [{:keys [error url]} (-> req :params (get "url") validate-url)]
-    (if error
-      (return-with-error "URL is not in a valid format. Please try again.")
-      (let [{:keys [error id]} (insert-shorty url)]
-        (if error
-          (return-with-error "Error while shortening the URL. Please try again.")
-          (let [shorty (sql/get-by-id db :urls id {:builder-fn as-kebab-maps})
-                session-shorties (-> req :session :shorties vec)
-                new-session-shorties (conj session-shorties (update shorty :created-at str))]
-            (-> (see-other "/")
-                (with-flash :success "Your shorty has been created successfully!")
-                (with-session req [:shorties] new-session-shorties))))))))
+  [ds]
+  (fn
+    [req]
+    (let [{:keys [error url]} (-> req :params (get "url") validate-url)]
+      (if error
+        (return-with-error "URL is not in a valid format. Please try again.")
+        (let [{:keys [error id]} (insert-shorty url)]
+          (if error
+            (return-with-error "Error while shortening the URL. Please try again.")
+            (let [shorty (sql/get-by-id ds :urls id {:builder-fn as-kebab-maps})
+                  session-shorties (-> req :session :shorties vec)
+                  new-session-shorties (conj session-shorties (update shorty :created-at str))]
+              (-> (see-other "/")
+                  (with-flash :success "Your shorty has been created successfully!")
+                  (with-session req [:shorties] new-session-shorties)))))))))
 
 ;; REDIRECT shorty
 
 (defn- get-shorty-by-id
   "Retrieve a shorty from the database using the supplied id (PK)."
-  [id]
-  (sql/get-by-id db :urls id {:builder-fn as-kebab-maps}))
+  [ds]
+  (fn [id]
+    (sql/get-by-id ds :urls id {:builder-fn as-kebab-maps})))
 
 (defn redirect-shorty
   "This is the meat of the app: It redirects the shortened URL to the underlying one."

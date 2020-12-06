@@ -1,15 +1,12 @@
 (ns clj-shorty.database
-  (:require [mount.core :refer [defstate]]
+  (:require [integrant.core :as ig]
             [next.jdbc :as jdbc]
-            [next.jdbc.connection :as connection]
-            [clj-shorty.config :refer [cfg]])
+            [next.jdbc.connection :as connection])
   (:import (com.zaxxer.hikari HikariDataSource)))
 
-(defn- mk-db
-  []
-  (let [db-spec {:jdbcUrl (:db-conn-string cfg)}]
+(defmethod ig/init-key :clj-shorty/database [_ {:keys [config]}]
+  (let [db-spec {:jdbcUrl (:db-conn-string config)}]
     (connection/->pool HikariDataSource db-spec)))
 
-(declare db)
-(defstate db
-  :start (mk-db))
+(defmethod ig/halt-key! :clj-shorty/database [_ ds]
+  (.close ds))
