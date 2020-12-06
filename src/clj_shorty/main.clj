@@ -12,5 +12,5 @@
     (-> (Runtime/getRuntime)
         (.addShutdownHook (fn []
                             (timbre/info "Shutting down system")
-                            (ig/halt system))))
+                            (ig/halt! system))))
     (timbre/info "Application is ready.")))
