@@ -8,9 +8,9 @@
   "The main entry point when the app is not running in REPL-mode."
   [& args]
   (timbre/info "Bootstrapping the application ...")
-  (let [system (ig/init config)
-        (-> (Runtime/getRuntime)
-            (.addShutdownHook (fn []
-                                (timbre/info "Shutting down system")
-                                (ig/halt system))))]
+  (let [system (ig/init config)]
+    (-> (Runtime/getRuntime)
+        (.addShutdownHook (fn []
+                            (timbre/info "Shutting down system")
+                            (ig/halt system))))
     (timbre/info "Application is ready.")))
