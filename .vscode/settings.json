@@ -1,0 +1,21 @@
+{
+  "calva.customREPLCommandSnippets": [
+    {
+      "name": "Reset REPL",
+      "snippet": "(do (require 'dev) (in-ns 'dev) (reset))",
+      "ns": "user",
+      "repl": "clj"
+    }
+  ],
+  "calva.replConnectSequences": [
+    {
+      "name": "clj-shorty",
+      "projectType": "Clojure CLI",
+      "cljsType": "none",
+      "afterCLJReplJackInCode": "(dev) (go)",
+      "menuSelections": {
+        "cljAliases": ["dev"]
+      }
+    }
+  ]
+}
