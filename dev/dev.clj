@@ -3,3 +3,9 @@
             [clj-shorty.system :refer [config]]))
 
 (integrant.repl/set-prep! (constantly config))
+
+(comment
+  (go))
+
+(comment
+  (reset))
