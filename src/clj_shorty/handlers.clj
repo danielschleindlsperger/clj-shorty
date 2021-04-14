@@ -108,7 +108,7 @@
   If the id already exists it will retry the operatoin up to 5 times and then abort with a
   return value of {:error error}.
   If it succeeds, it returns a map with the keys :id and :url"
-  ([ds url] (insert-shorty url 0))
+  ([ds url] (insert-shorty ds url 0))
   ([ds url n]
    (if (< 5 n)
      {:error "Could not find unique id after 5 tries."}
@@ -142,7 +142,7 @@
     (let [{:keys [error url]} (-> req :params (get "url") validate-url)]
       (if error
         (return-with-error "URL is not in a valid format. Please try again.")
-        (let [{:keys [error id]} (insert-shorty url)]
+        (let [{:keys [error id]} (insert-shorty ds url)]
           (if error
             (return-with-error "Error while shortening the URL. Please try again.")
             (let [shorty (sql/get-by-id ds :urls id {:builder-fn as-kebab-maps})

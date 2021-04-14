@@ -26,7 +26,7 @@
    ["" {:get (homepage cfg assets)
         :middleware (concat [(session cfg) wrap-flash] security)}]
    ["shorties" {:post (store-shorty ds)
-                :middleware (concat [parameters-middleware session wrap-flash] security)
+                :middleware (concat [parameters-middleware (session cfg) wrap-flash] security)
                 :conflicting true}]
              ;; TODO: add actual favicon
    ["favicon.ico" {:get (constantly {:status 404})
