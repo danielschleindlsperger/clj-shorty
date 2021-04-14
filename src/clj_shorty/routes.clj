@@ -35,7 +35,7 @@
                                     :body "User-agent: *\nDisallow:"
                                     :headers {"content-type" "text/plain; charset=UTF-8"}})
                   :conflicting true}]
-   [":id" {:get redirect-shorty :conflicting true}]])
+   [":id" {:get (redirect-shorty ds) :conflicting true}]])
 
 (defn app [opts]
   (ring/ring-handler (ring/router (routes opts)) not-found-page))

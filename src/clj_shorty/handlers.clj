@@ -156,12 +156,13 @@
 
 (defn- get-shorty-by-id
   "Retrieve a shorty from the database using the supplied id (PK)."
-  [ds]
-  (fn [id]
-    (sql/get-by-id ds :urls id {:builder-fn as-kebab-maps})))
+  [ds id]
+  (sql/get-by-id ds :urls id {:builder-fn as-kebab-maps}))
 
 (defn redirect-shorty
   "This is the meat of the app: It redirects the shortened URL to the underlying one."
-  [req]
-  (when-let [shorty (->> req :path-params :id get-shorty-by-id)]
-    (temporary-redirect (:target-url shorty))))
+  [ds]
+  (fn
+    [req]
+    (when-let [shorty (->> req :path-params :id (get-shorty-by-id ds))]
+      (temporary-redirect (:target-url shorty)))))
